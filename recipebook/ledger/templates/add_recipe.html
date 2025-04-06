@@ -1,0 +1,17 @@
+<h2>Add Recipe</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ recipe_form.as_p }}
+
+    <h3>Ingredients:</h3>
+    {{ ingredient_form.as_p }}
+
+    <div style="margin-bottom: 16px;">
+        <a href="{% url 'ledger:create_new_ingredient' %}?next={% url 'ledger:add_recipe' %}">+ Create New Ingredient</a>
+    </div>
+
+    <div>
+        <button type="submit">Create Recipe</button>
+    </div>
+</form>
