@@ -1,0 +1,14 @@
+<h2>Add Ingredient to {{ recipe.name }}</h2>
+    
+<form method="POST">
+    {% csrf_token %}
+    {{ ingredient_form.as_p }}
+    <button type="submit">Add Ingredient</button>
+
+    <div style="margin-top: 16px;">
+        <a href="{% url 'ledger:create_new_ingredient' %}?next={% url 'ledger:add_recipe_ingredient' pk=recipe.pk %}">+ Create New Ingredient</a>
+    </div>
+</form>
+<br>
+<a href="{% url 'ledger:recipe_specific' num=recipe.pk %}">Back to Recipe</a>
+

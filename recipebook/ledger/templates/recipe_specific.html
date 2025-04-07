@@ -7,9 +7,27 @@
 {% block content %}
     <h4>{{ recipe.name }}</h4>
     <p>Author: {{ recipe.author.username }}</p>
+
+    <div>
+        {% for image in recipe.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ image.description }}" style="max-width: 300px; height: auto; display: block; margin-bottom: 10px;">
+        {% empty %}
+            <p>No images available for this recipe.</p>
+        {% endfor %}
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <a href="{% url 'ledger:add_image' pk=recipe.pk %}">+ Upload New Image</a>
+    </div>
+
+    <h5>Ingredients:</h5>
     <ul>
         {% for ingredient in ingredients %}
             <li>{{ ingredient.quantity }} {{ ingredient.ingredient.name }}</li>
         {% endfor %}
     </ul>
+
+    <div style="margin-top: 16px;">
+        <a href="{% url 'ledger:add_recipe_ingredient' pk=recipe.pk %}">+ Add Recipe Ingredient</a>
+    </div>
 {% endblock %}
