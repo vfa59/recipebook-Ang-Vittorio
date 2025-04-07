@@ -5,7 +5,10 @@
     {{ recipe_form.as_p }}
 
     <h3>Ingredients:</h3>
-    {{ ingredient_form.as_p }}
+    {{ formset.management_form }}
+    {% for form in formset %}
+        {{ form.as_p }}
+    {% endfor %}
 
     <div style="margin-bottom: 16px;">
         <a href="{% url 'ledger:create_new_ingredient' %}?next={% url 'ledger:add_recipe' %}">+ Create New Ingredient</a>
