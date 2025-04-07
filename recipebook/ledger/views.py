@@ -3,6 +3,7 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from .models import Recipe, RecipeIngredient, RecipeImage
 from .forms import RecipeForm, RecipeIngredientForm, NewIngredientForm, RecipeImageForm
+from django.forms import formset_factory
 
 @login_required
 def home(request):
@@ -25,25 +26,29 @@ def recipe_specific(request, num):
 
 @login_required
 def add_recipe(request):
+    IngredientFormSet = formset_factory(RecipeIngredientForm, extra=3)
+
     if request.method == 'POST':
         recipe_form = RecipeForm(request.POST)
-        ingredient_form = RecipeIngredientForm(request.POST)
+        formset = IngredientFormSet(request.POST)
 
-        if recipe_form.is_valid() and ingredient_form.is_valid():
+        if recipe_form.is_valid() and formset.is_valid():
             recipe = recipe_form.save(commit=False)
             recipe.author = request.user  
             recipe.save()
-
-            ingredient = ingredient_form.save(commit=False)
-            ingredient.recipe = recipe  
-            ingredient.save()
+            
+            for form in formset:
+                if form.cleaned_data:  
+                    ingredient = form.save(commit=False)
+                    ingredient.recipe = recipe
+                    ingredient.save()
 
             return redirect('ledger:recipes_list')
     
     recipe_form = RecipeForm()
-    ingredient_form = RecipeIngredientForm()
+    formset = IngredientFormSet()
 
-    return render(request, 'add_recipe.html', {'recipe_form': recipe_form, 'ingredient_form': ingredient_form,})
+    return render(request, 'add_recipe.html', {'recipe_form': recipe_form, 'formset': formset})
 
 @login_required
 def create_new_ingredient(request):
